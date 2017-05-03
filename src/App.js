@@ -32,28 +32,45 @@ class App extends Component {
   postBattle(){
     api
       .post('/battle')
-      .then(response => console.log(response));
+      .then(this.getBattle())
+
   }
 
+  deleteGame(id){
+    api
+      .delete(`/battle/${id}`)
+  }
+  logId(id){
+    api
+      .get(`/battle/${id}`)
+      .then(data => console.log(data));
+  }
+
+  _makeBattles(){
+    return this.state.battles.map(battle => {
+      const id = battle.battleId;
+      return (
+        <li key={id}>{id}
+          <button key={id} onClick={() => this.deleteGame(id)}>Delete Game</button>
+          <button  onClick={() => this.logId(id)}>Log Game</button>
+        </li>
+      )
+    })
+  }
 
 
   componentDidMount(){
 
   }
   render() {
-    if(this.state.battles.length === 0){
-
-    }
     return (
       <div className="App">
         <Game />
-        <button onClick={this.getBattle.bind(this)}>Get Battles</button>
+        <button onClick={this.getBattle.bind(this)}>Get Battles!</button>
+        <button onClick={this.postBattle.bind(this)}>Post Battles!</button>
         <ul>
           {
-            this.state.battles.map(battle => {
-              const id = battle.battleId;
-              return <li key={id}>{id}</li>
-            })
+            this._makeBattles()
           }
         </ul>
       </div>
