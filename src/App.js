@@ -3,6 +3,8 @@ import { create } from 'apisauce';
 
 import Game from './Components/Game';
 
+
+//initial API configuration, passing the the header and the key
 const api = create({
   baseURL: "https://zyqh9s9xt4.execute-api.eu-west-1.amazonaws.com/prod",
   headers: {
@@ -17,7 +19,7 @@ class App extends Component {
       battles : []
     }
   }
-
+//calling the api and setting the state with all the id's of the current playing games
   getBattle(){
     api
       .get('/battle')
@@ -28,7 +30,8 @@ class App extends Component {
         })
       })
   }
-
+//calling the api and creating a new game
+//then calling the state again for a re-render of the state
   postBattle(){
     api
       .post('/battle')
@@ -36,6 +39,9 @@ class App extends Component {
 
   }
 
+
+//this is the issue
+//what I'm thinking is that I write the wrong path for retrieving the id of the game
   deleteGame(id){
     api
       .delete(`/battle/${id}`)
@@ -46,6 +52,8 @@ class App extends Component {
       .then(data => console.log(data));
   }
 
+//renders a list with the games
+//this will eventually be a react-router navigation thing
   _makeBattles(){
     return this.state.battles.map(battle => {
       const id = battle.battleId;
