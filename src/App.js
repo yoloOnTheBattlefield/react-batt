@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { create } from 'apisauce';
 
 import Game from './Components/Game';
+import Nav from './Components/Nav';
 
 
 //initial API configuration, passing the the header and the key
@@ -16,7 +17,8 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      battles : []
+      battles: [],
+      activeGame: ''
     }
   }
 //calling the api and setting the state with all the id's of the current playing games
@@ -36,13 +38,13 @@ class App extends Component {
     api
       .post('/battle')
       .then(this.getBattle())
-
   }
 
-
+//*****************
 //this is the issue
 //what I'm thinking is that I write the wrong path for retrieving the id of the game
   deleteGame(id){
+    console.log('clicked')
     api
       .delete(`/battle/${id}`)
   }
@@ -52,35 +54,18 @@ class App extends Component {
       .then(data => console.log(data));
   }
 
-//renders a list with the games
-//this will eventually be a react-router navigation thing
-  _makeBattles(){
-    return this.state.battles.map(battle => {
-      const id = battle.battleId;
-      return (
-        <li key={id}>{id}
-          <button key={id} onClick={() => this.deleteGame(id)}>Delete Game</button>
-          <button  onClick={() => this.logId(id)}>Log Game</button>
-        </li>
-      )
-    })
-  }
-
-
   componentDidMount(){
-
+    this.getBattle()
   }
   render() {
     return (
-      <div className="App">
-        <Game />
-        <button onClick={this.getBattle.bind(this)}>Get Battles!</button>
-        <button onClick={this.postBattle.bind(this)}>Post Battles!</button>
-        <ul>
-          {
-            this._makeBattles()
-          }
-        </ul>
+      <div className="App" onLoad={this.getBattle.bind(this)}>
+        <Game activeGame={this.state.activeGame}/>
+        <Nav
+          gameIds={this.state.battles}
+          deleteGame={this.deleteGame.bind(this)}
+          makeBattle={this.postBattle.bind(this)}
+        />
       </div>
     );
   }
